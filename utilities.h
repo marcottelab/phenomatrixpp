@@ -11,13 +11,13 @@
 #include <map>
 #include <set>
 #include <string>
+#include <limits>
+#include <cmath>
 using std::set;
-//using std::map;
 using std::multimap;
 
 #include "constants.h"
 #include "distance.h"
-
 
 size_t lines_in_file(const string&);
 set<phene_id_t> species_phene_set(const species_id_t&);
@@ -46,6 +46,12 @@ std::ostream& print_set(const unordered_set<size_t>& Set, std::ostream& out);
 bool has_numeric_component(const string& str);
 
 void ignore_set_header(istream& in);
+
+
+template <typename T>
+bool are_equal(T a, T b) {
+    return std::abs<T>(a - b) < std::numeric_limits<T>::epsilon();
+}
 
 
 template <class S, class T>

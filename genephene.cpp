@@ -8,7 +8,6 @@
 #include "genephene.h"
 
 
-
 genephene::genephene(
         double  (*distance_fn)(size_t,size_t,size_t,size_t),
         const   set<gene_id_t>& genes,
@@ -408,11 +407,11 @@ multimap<size_t,size_t> genephene::test_set_genes_and_phenes_to_cells(const mult
 
 void genephene::calculate_distances(const set<gene_id_t>& r_test_set, const multimap<gene_id_t, phene_id_t>& c_test_set, string suffix, string distance_fun) {
 
+    cout << "calculate_distances: before conversion -- rows in test set = " << r_test_set.size() << endl;
     // If there's a test set, change it to matrix rows/columns
     set<size_t>             row_test_set  = test_set_genes_to_rows(r_test_set);
     multimap<size_t,size_t> cell_test_set = test_set_genes_and_phenes_to_cells(c_test_set);
-    
-    cout << "calculate_distances: rows in test set = " << row_test_set.size() << endl;
+    cout << "calculate_distances: after conversion -- rows in test set = " << row_test_set.size() << endl;
     cout << "calculate_distances: cells in test set = " << cell_test_set.size() << endl;
 
     // Need common_items in order to calculate distances with hypergeometric fn.
@@ -573,7 +572,7 @@ pair<phene_id_t,dist_t> genephene::nearest(phene_id_t p) const {
             if (cur_value < min_value) {
                 min_value = cur_value;
                 min_index = j;
-            } else if (cur_value == min_value && min_value < 1) {
+            } else if (are_equal(cur_value, min_value) && min_value < 1) {
                 // If this one has the same value but more genes, keep it.
                 size_t cur_genes = (*_common_items)(j,j);
                 if (cur_genes > min_genes) min_index = j;
@@ -588,7 +587,7 @@ pair<phene_id_t,dist_t> genephene::nearest(phene_id_t p) const {
             if (cur_value < min_value) {
                 min_value = cur_value;
                 min_index = j;
-            } else if (cur_value == min_value && min_value < 1) {
+            } else if (are_equal(cur_value, min_value) && min_value < 1) {
                 // If this one has the same value but more genes, keep it.
                 size_t cur_genes = (*_common_items)(j,j);
                 if (cur_genes > min_genes) min_index = j;
@@ -704,10 +703,11 @@ void genephene::add_to_sorting(dist_phene_multiset_t& to, phene_id_t p, size_t k
         dist_phene_multiset_t::iterator kt      = to.begin();
         dist_phene_multiset_t::iterator prev_kt = to.begin();
         
-        while (kpos < k || *kt == prev_item) {
+        while (kpos < k || are_equal(kt->first(), prev_item)) {
             prev_item = kt->first();
-            ++kpos;
             prev_kt = kt;
+            
+            ++kpos;
             ++kt;
         }
         // Found the last position. Perform the actual deletion.

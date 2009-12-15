@@ -17,6 +17,8 @@
 #include "adjacency_list.h"
 
 
+
+
 class genephene {
 public:
 
@@ -237,9 +239,9 @@ void save_upper_prob_matrix(const string& filename, const M& m, T default_value,
     // We don't want to read certain values, e.g., when distance is so close to
     // 1.0 that it won't matter.
     T thresh_value;
-    if (default_value == 1) {
+    if (are_equal<T>(default_value, 1)) {
         thresh_value = default_value - threshold;
-    } else if (default_value == 0) {
+    } else if (are_equal<T>(default_value, 0)) {
         thresh_value = default_value + threshold;
     } else {
         cerr << "Error: threshold needs to be 0 or 1." << endl;
@@ -255,7 +257,7 @@ void save_upper_prob_matrix(const string& filename, const M& m, T default_value,
 
             T val = m(i,j);
 
-            if ((default_value == 0 && val > thresh_value) || (default_value == 1 && val < thresh_value)) {
+            if ((are_equal<T>(default_value, 0) && val > thresh_value) || (are_equal<T>(default_value, 1) && val < thresh_value)) {
                 if (phenotypes) out << gp.col_to_phene(i) << '\t' << gp.col_to_phene(j) << '\t' << val << endl;
                 else            out << i << '\t' << j << '\t' << val << endl;
             }
