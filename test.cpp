@@ -72,20 +72,23 @@ int main(int argc, char** argv) {
 
     // Use Boost to handle command line arguments.
     po::options_description desc("Allowed options");
-    string identifier, predict_genes_file, distance_measure, predict_root;
+    string identifier, predict_genes_file, distance_measure, predict_root,
+            predict_species, predict_phenotypes_file, method;
+    size_t min_genes = 0, kval = 0;
     desc.add_options()
-            ("help,h", "produce help message")
-            ("source-species,s", po::value<string>()->default_value("Hs,Mm,Dm,Ce,Sc,At"), "comma-separated list of source species")
-            ("predict-species,S", po::value<string>()->default_value("Hs"), "species to predict")
-            ("method,m", po::value<string>()->default_value("naivebayes"), "prediction method to use")
-            ("k,k", po::value<size_t>(), "k for k-nearest neighbors")
-            ("cross-validation,n", po::value<size_t>(), "n-fold cross-validation")
-            ("cross-validation-type,t", po::value<string>()->default_value("row"), "type of cross-validation (row-based or cell-based")
-            ("predict-phenotypes-file,p", po::value<string>(), "file containing list of phenotypes to predict (all in predict-species by default)")
-            ("identifier,i", po::value<string>(&identifier)->default_value("no_id"), "identifier for a run")
-            ("predict-genes-file,g", po::value<string>(&predict_genes_file)->default_value("predict_genes"), "file containing list of genes to go in the prediction matrix")
-            ("distance-measure,d", po::value<string>(&distance_measure)->default_value("hypergeometric"), "distance function to use")
-            ("predict-root,D", po::value<string>(&predict_root)->default_value("./"), "where to save predictions (./ or ../ recommended)")
+/* h */     ("help,h", "produce help message")
+/* s */     ("source-species,s", po::value<string>()->default_value("Hs,Mm,Dm,Ce,Sc,At"), "comma-separated list of source species")
+/* S */     ("predict-species,S", po::value<string>(&predict_species)->default_value("Hs"), "species to predict")
+/* m */     ("method,m", po::value<string>(&method)->default_value("naivebayes"), "prediction method to use")
+/* k */     ("k,k", po::value<size_t>(&kval), "k for k-nearest neighbors")
+/* n */     ("cross-validation,n", po::value<size_t>(), "n-fold cross-validation")
+/* t */     ("cross-validation-type,t", po::value<string>()->default_value("row"), "type of cross-validation (row-based or cell-based")
+/* p */     ("predict-phenotypes-file,p", po::value<string>(&predict_phenotypes_file), "file containing list of phenotypes to predict (all in predict-species by default)")
+/* i */     ("identifier,i", po::value<string>(&identifier)->default_value("no_id"), "identifier for a run")
+/* g */     ("predict-genes-file,g", po::value<string>(&predict_genes_file)->default_value("predict_genes"), "file containing list of genes to go in the prediction matrix")
+/* d */     ("distance-measure,d", po::value<string>(&distance_measure)->default_value("hypergeometric"), "distance function to use")
+/* D */     ("predict-root,D", po::value<string>(&predict_root)->default_value("./"), "where to save predictions (./ or ../ recommended)")
+/* x */     ("min-genes,x", po::value<size_t>(&min_genes)->default_value(0), "delete columns with fewer than x genes")
     ;
     po::positional_options_description p;
     p.add("source-species", -1);
@@ -103,24 +106,15 @@ int main(int argc, char** argv) {
     // Make sure the directory for saving is acceptable.
     normalize_directory(predict_root);
 
-
-    string predict_phenotypes_file;
-    string predict_species;
-    if (vm.count("predict-species"))
-        predict_species = vm["predict-species"].as<string>();
-
-
     // If this is the default, fix it.
     if (vm.count("predict-phenotypes-file")) {
-        predict_phenotypes_file = vm["predict-phenotypes-file"].as<string>();
         if (predict_phenotypes_file == "phenes.")
             predict_phenotypes_file += predict_species;
-    } else {
+    } else predict_phenotypes_file = "predict_phenotypes";
         //predict_phenotypes_file = "phenes." + predict_species;
         // Changed for consistency with the Rails crossval app (since we use
         // predict_genes for destination, also makes it a little less confusing).
-        predict_phenotypes_file = "predict_phenotypes";
-    }
+        
 
     cout << "vmsourcespecies is " << vm["source-species"].as<string>() << endl;
     vector<string> source_species = make_source_species_vector(vm["source-species"].as<string>());
@@ -129,11 +123,6 @@ int main(int argc, char** argv) {
     if (!vm.count("cross-validation"))
         cout << "Run identifier: " << identifier << endl;
     
-    string method(vm["method"].as<string>());
-    size_t kval = 0;
-    if (vm.count("k")) {
-        kval = vm["k"].as<size_t>();
-    }
     cout << "Method: " << method;
     if (kval > 0) cout << "\tk = " << kval << endl;
     else          cout << "\tfor all non-infinite neighbors" << endl;
