@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 /* k */     ("k,k", po::value<size_t>(&kval), "k for k-nearest neighbors")
 /* n */     ("cross-validation,n", po::value<size_t>(), "n-fold cross-validation")
 /* t */     ("cross-validation-type,t", po::value<string>()->default_value("row"), "type of cross-validation (row-based or cell-based")
-/* p */     ("predict-phenotypes-file,p", po::value<string>(&predict_phenotypes_file), "file containing list of phenotypes to predict (all in predict-species by default)")
+/* p */     ("predict-phenotypes-file,p", po::value<string>(&predict_phenotypes_file)->default_value("predict_phenotypes"), "file containing list of phenotypes to predict (all in predict-species by default)")
 /* i */     ("identifier,i", po::value<string>(&identifier)->default_value("no_id"), "identifier for a run")
 /* g */     ("predict-genes-file,g", po::value<string>(&predict_genes_file)->default_value("predict_genes"), "file containing list of genes to go in the prediction matrix")
 /* d */     ("distance-measure,d", po::value<string>(&distance_measure)->default_value("hypergeometric"), "distance function to use")
@@ -107,13 +107,8 @@ int main(int argc, char** argv) {
     normalize_directory(predict_root);
 
     // If this is the default, fix it.
-    if (vm.count("predict-phenotypes-file")) {
-        if (predict_phenotypes_file == "phenes.")
-            predict_phenotypes_file += predict_species;
-    } else predict_phenotypes_file = "predict_phenotypes";
-        //predict_phenotypes_file = "phenes." + predict_species;
-        // Changed for consistency with the Rails crossval app (since we use
-        // predict_genes for destination, also makes it a little less confusing).
+    if (predict_phenotypes_file == "phenes.")
+        predict_phenotypes_file += predict_species;
         
 
     cout << "vmsourcespecies is " << vm["source-species"].as<string>() << endl;
@@ -189,7 +184,6 @@ int main(int argc, char** argv) {
             // Create the marshall and add it.
             marshall predict;
             predict.distance_measure      = distance_measure;
-            // predict.matrix_identifier     = "genes_phenes." + predict_species + *it;
             predict.orthologs_filename    = predict_genes_file;
             predict.phenotypes_filename   = predict_phenotypes_file;
             predict.dest_species_info     = make_pair<string,string>(predict_species, "");
