@@ -34,6 +34,8 @@ public:
     string     phenotypes_filename;
     str_pair_t source_species_info;
     str_pair_t dest_species_info;
+    size_t     min_genes; // New option: only for predict_matrix, allow exclusion
+    // of phenotypes with fewer than min_genes.
 
     // Build it and give the user the pointer.
     void construct();       // build a source matrix

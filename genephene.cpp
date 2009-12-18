@@ -206,7 +206,9 @@ void genephene::load(const string& filename) {
 
 
 genephene::genephene(const genephene& orig)
-    : gene_to_row(orig.gene_to_row),
+    : _num_phenes(orig._num_phenes),
+      _num_genes(orig._num_genes),
+      gene_to_row(orig.gene_to_row),
       phene_to_column(orig.phene_to_column),
       row_to_gene(orig.row_to_gene),
       column_to_phene(orig.column_to_phene),

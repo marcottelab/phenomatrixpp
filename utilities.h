@@ -48,6 +48,17 @@ bool has_numeric_component(const string& str);
 void ignore_set_header(istream& in);
 
 
+// Find some sort of item in the counter and increment it, or add it to the
+// counter.
+template <typename T>
+void increment_map_count(map<T,size_t>& counter, const T& item) {
+    if (counter.find(item) == counter.end())
+        counter[item] = 0;
+    else
+        counter[item]++;
+}
+
+
 template <typename T>
 bool are_equal(T a, T b) {
     return std::abs<T>(a - b) < std::numeric_limits<T>::epsilon();

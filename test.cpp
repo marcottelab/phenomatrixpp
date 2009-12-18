@@ -130,7 +130,10 @@ int main(int argc, char** argv) {
     cout << "File containing list of genes to predict: " << predict_genes_file << endl;
     cout << endl;
 
-
+    /***************************************************************************
+     * CODE FOR CROSS-VALIDATION. SEE CORRESPONDING ELSE STATEMENT FOR REGULAR *
+     * PREDICTION CODE.                                                        *
+     ***************************************************************************/
     if (vm.count("cross-validation")) {
         size_t fold = vm["cross-validation"].as<size_t>();
         for (size_t i = 0; i < fold; ++i) {
@@ -150,6 +153,7 @@ int main(int argc, char** argv) {
 
                 // Create the marshall and add it.
                 marshall m;
+                m.min_genes             = min_genes; // only applies to the dest side.
                 m.distance_measure      = distance_measure;
                 m.matrix_identifier     = "genes_phenes." + predict_species + *it;
                 m.orthologs_filename    = "genes." + *it;
@@ -179,10 +183,22 @@ int main(int argc, char** argv) {
                     cerr << "Error: Empty cell test set in file '" << ident << "'" << endl;
                     throw;
                 }
+
+                cerr << "Warning: While this code appears to work, it only tests recovery of positive associations." << endl;
+
+                // We can't really modify the test sets to account for deletion
+                // of phenotypes within this analysis. Instead, they should be
+                // modified through the crossval environment (or some other way)
+                // manually.
+                if (vm.count("min-genes") && min_genes > 0) {
+                    cerr << "Do not use the min-genes (x) option with cell-based cross-validation. Instead, prepare special input files." << endl;
+                    throw;
+                }
             }
 
             // Create the marshall and add it.
             marshall predict;
+            predict.min_genes             = min_genes;
             predict.distance_measure      = distance_measure;
             predict.orthologs_filename    = predict_genes_file;
             predict.phenotypes_filename   = predict_phenotypes_file;
@@ -224,6 +240,7 @@ int main(int argc, char** argv) {
 
             // Create the marshall and add it.
             marshall m;
+            m.min_genes             = min_genes; // only applies to the dest side.
             m.distance_measure      = distance_measure;
             m.matrix_identifier     = "genes_phenes." + predict_species + *it;
             m.orthologs_filename    = "genes." + *it;
@@ -235,6 +252,7 @@ int main(int argc, char** argv) {
         }
 
         marshall predict;
+        predict.min_genes                = min_genes; // only applies to the dest side.
         predict.distance_measure         = distance_measure;
         predict.dest_species_info        = make_pair<string,string>("Hs", "");
         predict.orthologs_filename       = predict_genes_file;

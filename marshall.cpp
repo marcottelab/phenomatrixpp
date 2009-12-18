@@ -64,10 +64,10 @@ void marshall::construct() {
     if (Smap.size() == 0) {
         cerr << "Error: Source species had 0 associations." << endl;
         throw;
-    } else {
-        cout << "Read " << Smap.size() << " associations." << endl;
-    }
-    multimap<gene_id_t,phene_id_t> Dmap;
+    } else cout << "Read " << Smap.size() << " associations." << endl;
+
+    map<phene_id_t, size_t> Dphene_genes; // keep track of number of genes per phene.
+    multimap<phene_id_t,gene_id_t> rDmap; // reversed from Smap so we can count entries.
 
     sin.close();
 
@@ -82,15 +82,22 @@ void marshall::construct() {
         din >> dgene;
         din >> dphene;
         while (din) {
-            if (Smap.find(dgene) != Smap.end()) {
-                // insert in both maps, since we ultimately want to pass just one.
-                Smap.insert(pair<gene_id_t,phene_id_t>(dgene, dphene));
-                Dmap.insert(pair<gene_id_t,phene_id_t>(dgene, dphene));
-            }
+            rDmap.insert(make_pair(dphene, dgene));
 
             // Read the next line
             din >> dgene;
             din >> dphene;
+        }
+
+
+        // Take elements from rDmap and insert them in Smap.
+        for (multimap<phene_id_t,gene_id_t>::const_iterator i = rDmap.begin(); i != rDmap.end(); ++i) {
+            if (rDmap.count(i->first) >= min_genes && Smap.find(dgene) != Smap.end()) {
+                // Only allow this entry to be included in the matrix if:
+                // * there are at least min_genes in the dest phenotype
+                // * the gene exists in the source species already.
+                Smap.insert(make_pair(i->second, i->first));
+            }
         }
     }
 
