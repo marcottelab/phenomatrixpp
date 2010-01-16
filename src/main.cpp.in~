@@ -1,8 +1,9 @@
 /* 
- * File:   test.cpp
+ * File:   main.cpp
  * Author: jwoods
  *
  * Created on June 19, 2009, 4:15 PM
+ * Renamed from test.cpp on January 15, 2010, 3:52 PM
  */
 
 #include <boost/program_options.hpp>
@@ -14,7 +15,6 @@
 #include "partialbayes.h"
 
 namespace po = boost::program_options;
-
 
 std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
 
@@ -69,6 +69,8 @@ void normalize_directory(string& dir) {
  * MAIN: test genephene matrix class.
  */
 int main(int argc, char** argv) {
+    // Print version information immediately, no matter what else is asked for.
+    print_program_header();
 
     // Use Boost to handle command line arguments.
     po::options_description desc("Allowed options");

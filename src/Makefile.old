@@ -1,0 +1,91 @@
+.SUFFIXES:
+
+# Look for h files in headers, cpp in src, o in build, and anything not found in the cwd.
+vpath %.h ../headers
+vpath %.cpp ./
+vpath %.d ../deps
+vpath %.o ../obj
+vpath %   ../
+
+CXX=g++
+
+sources := $(wildcard *.cpp)
+objects := $(patsubst %.cpp,%.o,$(wildcard *.o)) # assume all .cpp files are .o files
+DEPS := $(patsubst %.o,%.d,$(objects))
+
+# This expands automatically to search for libboost_filesystem, &c, in /lib followed by /usr/local/lib
+# followed by (prefix)/lib (typically /usr/local/lib).
+# That should work fine for compiling on draco and eventually on lovelace if we get the same set of
+# libraries there.
+LIBS=-lboost_filesystem -lboost_system -lboost_program_options
+
+CPPFLAGS=-MM -g3 -DDEBUG -Wall # $(include_dirs)
+# CPPFLAGS=-MM -O3 -Wall $(include_dirs)
+
+BIN=phenomatrix
+
+RAILS_DIR=~/NetBeansProjects/crossval/bin/lovelace/
+LIBS=-lboost_filesystem -lboost_system -lboost_program_options
+
+.PHONY: all
+all : $(BIN)
+
+test :
+	echo "$(sources)"
+	echo "$(objects)"
+
+adjacency_list.h utilities.h : constants.h
+avgmindist.h knearest.h mindist.h : oracle.h
+constants.h : type_shield.h
+constants.h : -lboost_filesystem
+distance.h : euclidean.h hypergeometric.h
+genephene.h marshall.h oracle.h : utilities.h
+genephene.h : adjacency_list.h
+marshall.h : genephene.h
+marshall.h utilities.h : distance.h
+oracle.h : marshall.h
+partialbayes.h : knearest.h
+
+$(BIN) : $(objects)
+	${CXX} -o $@ $^ $(LIBS) ${OPTS}
+
+# Compile foo.o from foo.cpp
+$(objects): %.o: %.cpp %.h
+	$(CXX) -c $(CPPFLAGS) $< -o $@
+
+# test.o : test.cpp mindist.o avgmindist.o partialbayes.o -lboost_program_options
+#	$(CXX) -c $(CPPFLAGS) $< -o $@
+
+# oracle.o: adjacency_list.o oracle.cpp oracle.h genephene.o 
+#	${CXX} -c $(CPPFLAGS) $< -o $@
+
+# marshall.o: marshall.cpp marshall.h utilities.o genephene.o distance.o ; ${CC} -c marshall.cpp ${OPTS}
+
+# genephene.o: genephene.cpp genephene.h utilities.o adjacency_list.o hypergeometric.o ; ${CC} -c genephene.cpp ${OPTS}
+
+# mindist.o: mindist.cpp mindist.h oracle.o ; ${CC} -c mindist.cpp ${OPTS}
+
+# avgmindist.o: avgmindist.cpp avgmindist.h oracle.o ; ${CC} -c avgmindist.cpp ${OPTS}
+
+# adjacency_list.o: adjacency_list.cpp adjacency_list.h ; ${CC} -c adjacency_list.cpp ${OPTS}
+
+# utilities.o: utilities.cpp utilities.h constants.h ; ${CC} -c utilities.cpp ${OPTS}
+
+# knearest.o: knearest.cpp knearest.h oracle.o type_shield.h ; ${CC} -c knearest.cpp ${OPTS}
+
+# partialbayes.o: partialbayes.cpp partialbayes.h knearest.o ; ${CC} -c partialbayes.cpp ${OPTS}
+
+.PHONY: deps
+deps : $(sources)
+
+rails:
+	cp ${BIN} ${RAILS_DIR}
+.PHONY: rails
+
+.PHONY: clean cleanobj cleanbin
+clean: cleanobj cleanbin
+cleanobj:
+	rm *.o
+cleanbin:
+	rm $(BIN)
+
