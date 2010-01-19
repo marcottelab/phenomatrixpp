@@ -92,6 +92,7 @@ int main(int argc, char** argv) {
 /* d */     ("distance-measure,d", po::value<string>(&distance_measure)->default_value("hypergeometric"), "distance function to use")
 /* D */     ("predict-root,D", po::value<string>(&predict_root)->default_value("./"), "where to save predictions (./ or ../ recommended)")
 /* x */     ("min-genes,x", po::value<size_t>(&min_genes)->default_value(0), "delete columns with fewer than x genes")
+/* v */     ("version,v", "show version")
     ;
     po::positional_options_description p;
     p.add("source-species", -1);
@@ -99,6 +100,9 @@ int main(int argc, char** argv) {
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
     po::notify(vm);
+
+    // Print version message and exit
+    if (vm.count("version")) return 0;
 
     // Print the help message.
     if (vm.count("help")) {
