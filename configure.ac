@@ -1,5 +1,6 @@
-AC_INIT([main.cpp], [0.1.0], [john.woods@marcottelab.org])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AC_INIT(phenomatrix, 0.1.0)
+AC_CONFIG_SRCDIR(src/main.cpp)
+AM_INIT_AUTOMAKE
 AC_PROG_CXX
 AC_CONFIG_FILES([
  Makefile
