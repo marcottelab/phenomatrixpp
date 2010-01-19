@@ -1,1 +1,7 @@
+ACLOCAL_AMFLAGS = -I aclocal
+AM_CXXFLAGS = $(BOOST_CPPFLAGS)
+AM_LDFLAGS = $(BOOST_LDFLAGS)
+EXTRA_DIST = COPYING \
+        README \
+        aclocal
 SUBDIRS = . src 

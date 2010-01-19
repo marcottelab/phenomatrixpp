@@ -17,9 +17,10 @@ have_boost_program_options=no
 have_boost_filesystem=no
 have_boost=no
 
-AX_BOOST_BASE([1.39])
+AX_BOOST_BASE([1.39.0])
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
+AX_BOOST_PROGRAM_OPTIONS
 
 #AC_ARG_WITH(boost,
 #    [ --with-boost=<path> prefix of boost installation. e.g. /usr/local or /home/user/usr/local],
