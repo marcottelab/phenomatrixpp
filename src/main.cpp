@@ -5,9 +5,13 @@
  * Created on June 19, 2009, 4:15 PM
  * Renamed from test.cpp on January 15, 2010, 3:52 PM
  */
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <boost/program_options.hpp>
 #include <boost/tokenizer.hpp>
+#include <iostream>
 
 #include "version.h"
 #include "mindist.h"
@@ -17,6 +21,8 @@
 
 namespace po = boost::program_options;
 
+const string program_version = PACKAGE_STRING;
+
 std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
 
     vector<string>::const_iterator i = rhs.begin();
@@ -25,6 +31,14 @@ std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
         out << ' ' << *i;
     out << flush;
     return out;
+}
+
+// Prints program version information.
+void print_program_header() {
+    cout << "Phenomatrix++ v@PACKAGE_VERSION@ on @ARCH@" << endl;
+    cout << "Copyright John O. Woods, 2009 - 2010" << endl;
+    cout << "The Marcotte Lab, The University of Texas at Austin" << endl;
+    cout << endl;
 }
 
 // Convert comma-separated list to vector.
