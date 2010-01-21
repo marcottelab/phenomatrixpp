@@ -7,7 +7,6 @@
 
 #include "marshall.h"
 
-
 // Actual constructor for Hs x nonHs and Hs x Hs matrices (source, not prediction).
 // Takes two association files. The first argument is a file containing a list of
 // orthologs between the two species.

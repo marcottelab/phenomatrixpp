@@ -22,3 +22,19 @@ double (*switch_distance_function(const std::string& distance_measure))(size_t,s
 
     return choices[distance_measure];
 }
+
+
+void Distance::test() const {
+    using std::cout;
+    using std::flush;
+    using std::endl;
+
+    cout << "Testing distance function:" << endl;
+    cout << " 1. Testing for 0 result..." << flush;
+    if (are_equal<double>( (10, 10, 10, 100), 0.0 )) cout << "OK" << endl;
+    else { cout << "FAIL" << endl; throw; }
+
+    cout << " 1. Testing for 1 result..." << flush;
+    if (are_equal<double>( (10, 10, 0, 100), 1.0 )) cout << "OK" << endl;
+    else { cout << "FAIL" << endl; throw; }
+}

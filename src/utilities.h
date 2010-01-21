@@ -60,7 +60,7 @@ void increment_map_count(map<T,size_t>& counter, const T& item) {
 
 
 template <typename T>
-bool are_equal(T a, T b) {
+bool are_equal(const T& a, const T& b) {
     return std::abs<T>(a - b) < std::numeric_limits<T>::epsilon();
 }
 

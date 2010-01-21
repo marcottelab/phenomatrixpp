@@ -420,6 +420,8 @@ void genephene::calculate_distances(const set<gene_id_t>& r_test_set, const mult
     // This also does calculate_total_nonzeros, but without the extra iterations.
     calculate_common_items(row_test_set, cell_test_set, suffix);
 
+    // Ensure that the distance function is working properly.
+    distance_function.test();
 
     if (phene_distance == NULL) {
         phene_distance = new symmetric_matrix<dist_t>(_num_phenes);

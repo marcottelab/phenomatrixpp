@@ -10,7 +10,9 @@
 
 #include "euclidean.h"
 #include "hypergeometric.h"
+#include "utilities.h"
 
+#include <iostream>
 #include <string>
 #include <map>
 using std::map;
@@ -24,6 +26,8 @@ public:
     ~Distance();
 
     double operator()(size_t m, size_t n, size_t k, size_t N);
+
+    void test() const;
 protected:
     double (*function_pointer)(size_t, size_t, size_t, size_t);
 };
