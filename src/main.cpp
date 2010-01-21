@@ -7,13 +7,18 @@
  */
 #ifdef HAVE_CONFIG_H
 # include <config.h>
+# include <string>
+const std::string PACKAGE_STRING_  = PACKAGE_STRING;
+const std::string TARGET_PLATFORM_ = CTARGET;
+const std::string BUILD_PLATFORM_  = CBUILD;
+const std::string HOST_PLATFORM_   = CHOST;
+const std::string EMAIL_ADDRESS_   = PACKAGE_BUGREPORT;
 #endif
 
 #include <boost/program_options.hpp>
 #include <boost/tokenizer.hpp>
 #include <iostream>
 
-#include "version.h"
 #include "mindist.h"
 #include "avgmindist.h"
 // #include "knearest.h"
@@ -21,7 +26,6 @@
 
 namespace po = boost::program_options;
 
-const string program_version = PACKAGE_STRING;
 
 std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
 
@@ -35,9 +39,18 @@ std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
 
 // Prints program version information.
 void print_program_header() {
-    cout << "Phenomatrix++ v@PACKAGE_VERSION@ on @ARCH@" << endl;
+#ifdef HAVE_CONFIG_H
+    cout << "Phenomatrix++ v" << PACKAGE_STRING_ << endl;
+    cout << "Target: " << TARGET_PLATFORM_ << endl;
+    cout << "Build : " << BUILD_PLATFORM_ << endl;
+    cout << "Host  : " << HOST_PLATFORM_ << endl;
+#else
+    cout << "Phenomatrix++" << endl;
+    cout << "    No config.h suppied: version and platform information unavailable." << endl;
+#endif
     cout << "Copyright John O. Woods, 2009 - 2010" << endl;
     cout << "The Marcotte Lab, The University of Texas at Austin" << endl;
+    cout << "Bug reports to " << EMAIL_ADDRESS_ << endl;
     cout << endl;
 }
 

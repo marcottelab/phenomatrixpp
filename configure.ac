@@ -8,27 +8,21 @@ AC_CONFIG_AUX_DIR([/usr/share/automake-1.7])
 AC_CONFIG_SRCDIR([src/oracle.h])
 AC_CONFIG_HEADERS([config.h])
 
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED([CHOST], ["$host"], [Canonical host])
+AC_CANONICAL_BUILD
+AC_DEFINE_UNQUOTED([CBUILD], ["$build"], [Canonical build])
+AC_CANONICAL_TARGET
+AC_DEFINE_UNQUOTED([CTARGET], ["$target"], [Canonical target])
+
 # Checks for programs.
 AC_PROG_CXX
 
 # Checks for libraries.
-have_boost_system=no
-have_boost_program_options=no
-have_boost_filesystem=no
-have_boost=no
-
 AX_BOOST_BASE([1.39.0])
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
-
-#AC_ARG_WITH(boost,
-#    [ --with-boost=<path> prefix of boost installation. e.g. /usr/local or /home/user/usr/local],
-#    [BOOST_PREFIX=$with_boost],
-#    AC_MSG_ERROR([You must call configure with the --with-boost option.
-#    This tells configure where to find the Boost library and headers.
-#    e.g. --with-boost=/usr/local or --with-boost=/home/user/usr/local])
-#)
 
 AC_SEARCH_LIBS([get_system_category],[boost_system],[have_boost_system=yes])
 
@@ -54,7 +48,6 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_FILES([
  Makefile
  src/Makefile
- src/version.h
 ])
 AC_OUTPUT
 
