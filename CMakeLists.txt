@@ -28,6 +28,8 @@ MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
 
 add_executable(phenomatrixpp ${Phenomatrixpp_SOURCES})
 
+install (TARGETS phenomatrixpp DESTINATION bin)
+
 target_link_libraries(phenomatrixpp
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
