@@ -122,6 +122,8 @@ public:
     // Gives an error if translation fails.
     size_t safely_translate_phenotype_to_column(const phene_id_t& p) const;
 
+    void test_distance_function() const;
+
 protected:
     size_t _num_phenes;
     size_t _num_genes;
@@ -155,7 +157,7 @@ protected:
     string species2_;
 
     // Distance function functor to use for calculations.
-    Distance distance_function;
+    double (*distance_function)(size_t, size_t, size_t, size_t);
 
     set<size_t> test_set_genes_to_rows(const set<gene_id_t>& test_set) const;
     multimap<size_t,size_t> test_set_genes_and_phenes_to_cells(const multimap<gene_id_t, phene_id_t>& test_set) const;

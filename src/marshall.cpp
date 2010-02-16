@@ -107,7 +107,12 @@ void marshall::construct() {
         phenes.insert(i->second);
 
     // Figure out which distance function to use.
-    double (*distfn)(size_t,size_t,size_t,size_t) = switch_distance_function(distance_measure);
+    //double (*distfn)(size_t,size_t,size_t,size_t) = switch_distance_function(distance_measure);
+    double (*distfn)(size_t,size_t,size_t,size_t) = NULL;
+    if (distance_measure == "hypergeometric") distfn = &hypergeometric;
+    else if (distance_measure == "euclidean") distfn = &euclidean;
+    else if (distance_measure == "manhattan") distfn = &manhattan;
+    else { cerr << "Error: Distance measure not recognized." << endl; throw; }
 
     cout << "Creating matrix for species pair: " << dest_species_info.first << ", " << source_species_info.first << endl;
     // Create matrix.

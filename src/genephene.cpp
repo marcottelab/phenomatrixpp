@@ -25,7 +25,7 @@ genephene::genephene(
         phene_distance(NULL),
         _common_items(NULL),
         original_filename(identifier),
-        distance_function(Distance(distance_fn))
+        distance_function(distance_fn)
 {
 
     // Get all of the phenes that were passed in.
@@ -100,7 +100,7 @@ genephene::genephene(
   gene_by_phene(genes.size(), phenes.size(), weighted_predictions),
   phene_distance(NULL),
   _common_items(NULL),
-  distance_function(Distance(distance_fn))
+  distance_function(distance_fn)
 {
 
     // Create the two mappings from gene to row and phenotype to column (and vice-versa)
@@ -421,7 +421,7 @@ void genephene::calculate_distances(const set<gene_id_t>& r_test_set, const mult
     calculate_common_items(row_test_set, cell_test_set, suffix);
 
     // Ensure that the distance function is working properly.
-    distance_function.test();
+    test_distance_function();
 
     if (phene_distance == NULL) {
         phene_distance = new symmetric_matrix<dist_t>(_num_phenes);
@@ -444,7 +444,7 @@ void genephene::calculate_distances(const set<gene_id_t>& r_test_set, const mult
                 if (common_items_j_k == 0)
                     (*phene_distance)(j,k) = 1; // Don't want any wishy-washy 9.9999e-1s.
                 else
-                    (*phene_distance)(j,k) = distance_function((*_common_items)(j,j),  // defective
+                    (*phene_distance)(j,k) = (*distance_function)((*_common_items)(j,j),  // defective
                                                                (*_common_items)(k,k),  // drawn
                                                                common_items_j_k,       // drawn defective
                                                                _num_genes - row_test_set.size()); // total
@@ -752,4 +752,28 @@ set<phene_id_t> genephene::local_phenes() const {
             ret.insert(column_to_phene[*i]);
     }
     return ret;
+}
+
+
+void genephene::test_distance_function() const {
+    using std::cout;
+    using std::flush;
+    using std::endl;
+
+    cout << "Testing distance function:" << endl;
+    cout << " 1. Testing for zero result..." << flush;
+    if (are_equal<double>( (*distance_function)(10, 10, 10, 100), 0.0 )) cout << "OK" << endl;
+    else {
+        cout << "FAIL: " << (*distance_function)(10, 10, 0, 100) << endl;
+        cerr << "Distance function must yield 0 for columns that have no items in common." << endl;
+        throw;
+    }
+
+    cout << " 1. Testing for non-zero result..." << flush;
+    if (!are_equal<double>( (*distance_function)(10, 10, 0, 100), 0.0 )) cout << "OK" << endl;
+    else {
+        cout << "FAIL: " << (*distance_function)(10, 10, 0, 100) << endl;
+        cerr << "Warning: Distance function for cross-validation and prediction must yield exactly 1.0 for columns that are the same, and the current function does not. This is okay if you're calculating a distribution." << endl;
+        // Don't throw, since we're probably calculating a distribution if this test fails.
+    }
 }

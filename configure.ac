@@ -1,9 +1,12 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-AC_PREREQ([2.64])
-AC_LANG([C++])
+AC_PREREQ([2.61])
 
-AC_INIT([phenomatrix], [0.1.0], [john@gunfreeschools.org])
+#AC_LANG(C++)
+
+AC_INIT([phenomatrix], [0.1.0], [john.woods@marcottelab.org])
+
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([/usr/share/automake-1.7])
 AC_CONFIG_SRCDIR([src/oracle.h])
 AC_CONFIG_HEADERS([config.h])
@@ -17,19 +20,25 @@ AC_DEFINE_UNQUOTED([CTARGET], ["$target"], [Canonical target])
 
 # Checks for programs.
 AC_PROG_CXX
+AC_PROG_LIBTOOL
 
 # Checks for libraries.
-AX_BOOST_BASE([1.39.0])
-AX_BOOST_SYSTEM
-AX_BOOST_FILESYSTEM
-AX_BOOST_PROGRAM_OPTIONS
-
-AC_SEARCH_LIBS([get_system_category],[boost_system],[have_boost_system=yes])
+#AX_BOOST_BASE([1.41.0])
+#AX_BOOST_SYSTEM
+#AX_BOOST_FILESYSTEM
+#AX_BOOST_PROGRAM_OPTIONS
+BOOST_REQUIRE([1.41.0])
+BOOST_FILESYSTEM
+BOOST_SYSTEM
+BOOST_PROGRAM_OPTIONS
+# AC_CHECK_HEADERS(boost/filesystem.hpp, /usr/local/include)
+#
+#have_boost_system=no
+#AC_CHECK_FUNC(get_system_category, AC_DEFINE(HAVE_BOOST_SYSTEM),)
+#AC_SEARCH_LIBS([get_system_category],[boost_system],[have_boost_system=yes],[have_boost_system=no])
 
 # Checks for header files.
-if test "x${have_boost_system}" = xyes; then
-  AC_CHECK_HEADERS([boost_system.h], [], [have_boost=no])
-fi
+#AC_CHECK_HEADERS([boost_system.h], [], [have_boost=no])
 
 #if test "x${have_boost}" = xno; then
 #  AC_MSG_ERROR([Could not find some or all of the boost libraries. These are required for building.])

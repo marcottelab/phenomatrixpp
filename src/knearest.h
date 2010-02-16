@@ -36,5 +36,7 @@ protected:
     string column_str;
 };
 
-#endif	/* _KNEAREST_H */
+
+
+#endif	/* _KNEAREST_H_ */
 
