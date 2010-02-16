@@ -1,0 +1,6 @@
+// the configured options and settings for Tutorial
+#define PACKAGE_STRING "@Phenomatrixpp_PACKAGE_STRING@"
+#define PACKAGE_BUGREPORT "@Phenomatrixpp_PACKAGE_BUGREPORT@"
+#define CHOST "@CMAKE_HOST_SYSTEM@"
+#define CTARGET "@CMAKE_SYSTEM@"
+#define COMPILER "@CMAKE_CXX_COMPILER_ID@"
