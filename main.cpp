@@ -38,7 +38,7 @@ std::ostream& operator<<(std::ostream& out, const vector<string>& rhs) {
 
 // Prints program version information.
 void print_program_header() {
-    cout << "Phenomatrix++ v" << PACKAGE_STRING_ << endl;
+    cout << PACKAGE_STRING_ << endl;
     cout << "Target: " << TARGET_PLATFORM_ << endl;
 //    cout << "Build : " << BUILD_PLATFORM_ << endl;
     cout << "Host  : " << HOST_PLATFORM_ << endl;
