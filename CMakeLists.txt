@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Phenomatrixpp)
 
-set (Phenomatrixpp_PACKAGE_STRING "Phenomatrix++ 0.1")
+set (Phenomatrixpp_PACKAGE_STRING "Phenomatrix++ 0.1.1")
 set (Phenomatrixpp_PACKAGE_BUGREPORT "john.woods@marcottelab.org")
 set (Phenomatrixpp_SOURCES main.cpp adjacency_list.cpp avgmindist.cpp distance.cpp euclidean.cpp genephene.cpp hypergeometric.cpp knearest.cpp marshall.cpp mindist.cpp oracle.cpp partialbayes.cpp type_shield.cpp utilities.cpp)
 message("PROJECT_NAME=${PROJECT_NAME}")

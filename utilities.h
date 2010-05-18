@@ -13,7 +13,11 @@
 #include <string>
 #include <limits>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 using std::set;
+using std::istream;
+using std::ifstream;
 using std::multimap;
 
 #include "constants.h"
@@ -134,45 +138,46 @@ bool in(const S& Set, const T& val) {
     return (Set.find(val) != Set.end());
 }
 
-// Read a set of items from a file.
-template <typename T>
-set<T> read_set(const string& filename, bool header = true) {
-    set<T> ret;
-
-    ifstream fin(filename.c_str());
-
-    // ignore header
-    string header_str;
-    if (header)
-        ignore_set_header(fin);
-
-    T item;
-    fin >> item;
-    while (fin) {
-        ret.insert(item);
-
-        fin >> item;
-    }
-
-    fin.close();
-
-    return ret;
-}
 
 // Same as above, but uses an open filestream (and keeps it open).
+// Called in "row" mode by main().
 template <typename T>
 set<T> read_set(istream& fin) {
     set<T> ret;
 
     T val;
     fin >> val;
+
+    // Quickly check to make sure the file is what we expected.
+    if (fin.peek() != '\n')
+        cerr << "Warning in read_set(1): Test set seems to contain two columns, but you requested 'row'-based cross-validation." << endl;
+
     while (fin) {
+        fin.ignore(INT_MAX, '\n');
         ret.insert(val);
         fin >> val;
     }
-    
+
     return ret;
 }
+
+
+// Read a set of items from a file.
+template <typename T>
+set<T> read_set(const string& filename, bool header = true) {
+
+    ifstream fin(filename.c_str());
+
+    // ignore header
+    if (header) ignore_set_header(fin);
+
+    set<T> ret = read_set<T>(fin);
+
+    fin.close();
+
+    return ret;
+}
+
 
 // Calls read_set.
 set<gene_id_t> load_test_set(const string& filename);
